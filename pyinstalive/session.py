@@ -4,6 +4,7 @@ import time
 import requests
 import os
 import pickle
+from http.cookiejar import MozillaCookieJar
 
 from datetime import datetime
 
@@ -51,13 +52,38 @@ class Session:
                 logger.separator()
             
             self.session_file = os.path.join(os.path.dirname(globals.config.config_path), "{}.dat".format(self.username))
+            self.cookies_file = os.path.join(os.path.dirname(globals.config.config_path), "{}.txt".format(self.username))
+            
+            if os.path.isfile(self.cookies_file):
+                logger.info(f"Cookies file detected: {self.cookies_file}.")
+                
+                self.session = requests.Session()
+                cookie_jar = MozillaCookieJar(self.cookies_file)
+                cookie_jar.load(self.cookies_file, ignore_discard=True, ignore_expires=True)
+                self.session.cookies.update(cookie_jar)
+                
+                self.session.headers = Constants.BASE_HEADERS
+    
+                self._save_session()
+                logger.separator()
+                logger.info("Successfully created a new login session file: {:s}".format(os.path.basename(self.session_file)))
+                for cookie in list(self.session.cookies):
+                    if cookie.name == "csrftoken":
+                        self.expires_epoch = cookie.expires
+                login_success = True
 
+            
+            else:
+                logger.warn("Could not find an existing cookies file: {}".format(os.path.basename(self.cookies_file)))
+    
             if not os.path.isfile(self.session_file):
                 logger.warn("Could not find an existing login session file: {:s}".format(os.path.basename(self.session_file)))
                 logger.warn("A new login session file will be created upon successful login.")
 
                 self.session = requests.Session()
                 self.session.headers = Constants.BASE_HEADERS
+
+                
 
                 if globals.config.proxy and self.proxy:
                     self.session.proxies = self.proxy
