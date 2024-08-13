@@ -76,77 +76,77 @@ class Session:
             else:
                 logger.warn("Could not find an existing cookies file: {}".format(os.path.basename(self.cookies_file)))
     
-            if not os.path.isfile(self.session_file):
-                logger.warn("Could not find an existing login session file: {:s}".format(os.path.basename(self.session_file)))
-                logger.warn("A new login session file will be created upon successful login.")
+                if not os.path.isfile(self.session_file):
+                    logger.warn("Could not find an existing login session file: {:s}".format(os.path.basename(self.session_file)))
+                    logger.warn("A new login session file will be created upon successful login.")
 
-                self.session = requests.Session()
-                self.session.headers = Constants.BASE_HEADERS
+                    self.session = requests.Session()
+                    self.session.headers = Constants.BASE_HEADERS
 
-                
+                    
 
-                if globals.config.proxy and self.proxy:
-                    self.session.proxies = self.proxy
+                    if globals.config.proxy and self.proxy:
+                        self.session.proxies = self.proxy
 
-                self.session.headers.update({"x-csrftoken": api.get_csrf_token()})
+                    self.session.headers.update({"x-csrftoken": api.get_csrf_token()})
 
-                login_result = api.do_login()
-                if login_result.get("authenticated", None):
-                    self._save_session()
-                    logger.separator()
-                    logger.info("Successfully created a new login session file: {:s}".format(os.path.basename(self.session_file)))
+                    login_result = api.do_login()
+                    if login_result.get("authenticated", None):
+                        self._save_session()
+                        logger.separator()
+                        logger.info("Successfully created a new login session file: {:s}".format(os.path.basename(self.session_file)))
+                        for cookie in list(self.session.cookies):
+                            if cookie.name == "csrftoken":
+                                self.expires_epoch = cookie.expires
+                        login_success = True
+                    else:
+                        logger.separator()
+                        if login_result.get("user") == False:
+                            logger.error("Could not login: The account does not exist.")
+                        elif login_result.get("message", '') == "checkpoint_required":
+                            logger.error("Could not login: The action was flagged as suspicious by Instagram.")
+                            logger.error("Complete the security checkpoint on another device and try again.")
+                        else:
+                            logger.error("Could not login: Ensure your credentials are correct and try again.")
+                        logger.separator()
+                        login_success = False
+                else:
+                    self.session = self._load_session()
+                    if globals.config.proxy and self.proxy:
+                        self.session.proxies = self.proxy
+                    logger.info("An existing login session file was found: {}".format(os.path.basename(self.session_file)))
+                    logger.info("Checking the validity of the saved login session.")
+
                     for cookie in list(self.session.cookies):
                         if cookie.name == "csrftoken":
                             self.expires_epoch = cookie.expires
-                    login_success = True
-                else:
-                    logger.separator()
-                    if login_result.get("user") == False:
-                        logger.error("Could not login: The account does not exist.")
-                    elif login_result.get("message", '') == "checkpoint_required":
-                        logger.error("Could not login: The action was flagged as suspicious by Instagram.")
-                        logger.error("Complete the security checkpoint on another device and try again.")
+
+                    if int(self.expires_epoch) <= int(time.time()):
+                        os.remove(self.session_file)
+                        self.session_file = None
+
+                        logger.warn("The login session file has expired and has been deleted.")
+                        logger.warn("A new login session file will be created upon successful login.")
+
+                        time.sleep(1)
+                        self.authenticate(username, password)
+                        return
                     else:
-                        logger.error("Could not login: Ensure your credentials are correct and try again.")
-                    logger.separator()
-                    login_success = False
-            else:
-                self.session = self._load_session()
-                if globals.config.proxy and self.proxy:
-                    self.session.proxies = self.proxy
-                logger.info("An existing login session file was found: {}".format(os.path.basename(self.session_file)))
-                logger.info("Checking the validity of the saved login session.")
-
-                for cookie in list(self.session.cookies):
-                    if cookie.name == "csrftoken":
-                        self.expires_epoch = cookie.expires
-
-                if int(self.expires_epoch) <= int(time.time()):
-                    os.remove(self.session_file)
-                    self.session_file = None
-
-                    logger.warn("The login session file has expired and has been deleted.")
-                    logger.warn("A new login session file will be created upon successful login.")
-
-                    time.sleep(1)
-                    self.authenticate(username, password)
-                    return
-                else:
-                    login_state = api.get_login_state()
-                    if login_state.get("entry_data", {}) != {}:
-                        if login_state.get("entry_data", {}).get("Challenge", None) != None:
-                            logger.separator()
-                            logger.error("The session was flagged as suspicious by Instagram.")
-                            logger.error("Complete the security checkpoint on another device and try again.")
-                            logger.separator()
-                            login_success = False
+                        login_state = api.get_login_state()
+                        if login_state.get("entry_data", {}) != {}:
+                            if login_state.get("entry_data", {}).get("Challenge", None) != None:
+                                logger.separator()
+                                logger.error("The session was flagged as suspicious by Instagram.")
+                                logger.error("Complete the security checkpoint on another device and try again.")
+                                logger.separator()
+                                login_success = False
+                            else:
+                                logger.error("The login session file is no longer valid.")
+                                logger.error("Unspecified error. Delete the login session file and try again.")
+                                logger.separator()
+                                login_success = False
                         else:
-                            logger.error("The login session file is no longer valid.")
-                            logger.error("Unspecified error. Delete the login session file and try again.")
-                            logger.separator()
-                            login_success = False
-                    else:
-                        login_success = True
+                            login_success = True
 
             if login_success:
                 if self.session.cookies["csrftoken"] != self.session.headers.get("x-csrftoken"):
