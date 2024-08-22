@@ -1,8 +1,7 @@
 from setuptools import setup
 
-__author__ = 'dvingerh'
-__email__ = 'dirk.ving@gmail.com'
-__version__ = '4.0.2'
+__author__ = 'samuelchristlie'
+__version__ = '4.0.3-beta'
 
 
 long_description = 'This Python script enables you to download ongoing Instagram livestreams as a video file.'
@@ -11,8 +10,7 @@ setup(
     name='pyinstalive',
     version=__version__,
     author=__author__,
-    author_email=__email__,
-    url='https://github.com/dvingerh/PyInstaLive',
+    url='https://github.com/samuelchristlie/PyInstaLive',
     packages=['pyinstalive'],
     entry_points={
         'console_scripts': [
@@ -31,8 +29,9 @@ setup(
     description='Download Instagram livestreams.',
     classifiers=[
         'Environment :: Console',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ]
 )
