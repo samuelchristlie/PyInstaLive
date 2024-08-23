@@ -25,7 +25,7 @@ proxy =
 
     BASE_HEADERS =  {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36', "x-ig-app-id": '936619743392459'}
     BASE_WEB = "https://www.instagram.com/"
-    BASE_API = "https://i.instagram.com/api/v1/"
+    BASE_API = "https://www.instagram.com/api/v1/"
 
     LOGIN_PAGE = BASE_WEB + "accounts/login/"
     LOGIN_AJAX = BASE_WEB + "accounts/login/ajax/"
