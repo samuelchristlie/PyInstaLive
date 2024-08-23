@@ -74,10 +74,11 @@ def new_config():
         logger.separator()
 
 def string_escape(s, encoding='utf-8'):
-    return (s.encode('latin1')
-             .decode('unicode-escape')
-             .encode('latin1')
-             .decode(encoding))
+    return s.encode(encoding)
+    # return (s.encode('latin1')
+    #          .decode('unicode-escape')
+    #          .encode('latin1')
+    #          .decode(encoding))
 
 def get_shared_data(data):
     match = re.search(r"window._sharedData = ({[^\n]*});", data)
