@@ -69,6 +69,7 @@ class Session:
                 logger.info("Successfully created a new login session file: {:s}".format(os.path.basename(self.session_file)))
                 for cookie in list(self.session.cookies):
                     if cookie.name == "csrftoken":
+                        self.session.headers.update({"x-csrftoken": self.session.cookies["csrftoken"]})
                         self.expires_epoch = cookie.expires
                 login_success = True
 
