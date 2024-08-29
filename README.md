@@ -28,3 +28,22 @@ To load JSON cookies to **PyInstaLive**, create a `username.txt` file containing
 .instagram.com	TRUE	/	TRUE	0	rur	xxx
 .instagram.com	TRUE	/	TRUE	1731300055	ds_user_id	xxx
 ```
+You can also specify custom paths for session and cookies files in `config.ini`
+```
+[pyinstalive]
+username = johndoe
+password = grapefruits
+session_file = ../sessions/johndoe.dat
+cookies_file = ../cookies/johndoe.txt
+download_path = {:s}
+download_comments = True
+clear_temp_files = True
+cmd_on_started =
+cmd_on_ended =
+ffmpeg_path = 
+log_to_file = True
+no_assemble = False
+use_locks = True
+send_heartbeat = True
+proxy =
+```
