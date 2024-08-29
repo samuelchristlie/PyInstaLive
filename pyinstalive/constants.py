@@ -2,12 +2,14 @@ import sys
 
 
 class Constants:
-    SCRIPT_VERSION = "4.0.2"
+    SCRIPT_VERSION = "4.0.3-beta"
     PYTHON_VERSION = sys.version.split(" ")[0]
     CONFIG_TEMPLATE = """
 [pyinstalive]
 username = johndoe
 password = grapefruits
+session_file = None
+cookies_file = None
 download_path = {:s}
 download_comments = True
 clear_temp_files = True

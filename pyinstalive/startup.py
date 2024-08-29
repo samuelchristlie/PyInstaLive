@@ -37,6 +37,8 @@ def validate_settings():
             globals.config.parser_object.read(globals.config.config_path)
             globals.config.username = globals.config.parser_object.get("pyinstalive", "username")
             globals.config.password = globals.config.parser_object.get("pyinstalive", "password")
+            globals.config.session_file = globals.config.parser_object.get("pyinstalive", "session_file")
+            globals.config.cookies_file = globals.config.parser_object.get("pyinstalive", "cookies_file")
             globals.config.download_path = globals.config.parser_object.get("pyinstalive", "download_path")
             globals.config.log_to_file = globals.config.parser_object.getboolean("pyinstalive", "log_to_file")
             globals.config.download_comments = globals.config.parser_object.getboolean("pyinstalive", "download_comments")

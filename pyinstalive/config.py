@@ -4,6 +4,8 @@ class Config:
     config_path = os.path.join(os.getcwd(), "pyinstalive.ini")
     username = None
     password = None
+    session_file = None
+    cookies_file = None
     download_path = os.getcwd()
     download_comments = True
     clear_temp_files = False

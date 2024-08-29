@@ -51,8 +51,8 @@ class Session:
                 logger.binfo("The default login credentials have been overridden.")
                 logger.separator()
             
-            self.session_file = os.path.join(os.path.dirname(globals.config.config_path), "{}.dat".format(self.username))
-            self.cookies_file = os.path.join(os.path.dirname(globals.config.config_path), "{}.txt".format(self.username))
+            self.session_file = globals.config.session_file if globals.config.session_file and os.path.isfile(globals.config.session_file) else os.path.join(os.path.dirname(globals.config.config_path), "{}.dat".format(self.username))
+            self.cookies_file = globals.config.cookies_file if globals.config.cookies_file and os.path.isfile(globals.config.cookies_file) else os.path.join(os.path.dirname(globals.config.config_path), "{}.txt".format(self.username))
             
             if os.path.isfile(self.cookies_file):
                 logger.info(f"Cookies file detected: {self.cookies_file}.")
