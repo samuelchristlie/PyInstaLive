@@ -12,7 +12,7 @@ This is a fork of [PyInstaLive](https://github.com/dvingerh/PyInstaLive). Please
 </div>
 
 ## ▶ Usage
-To load JSON cookies to **PyInstaLive**, create a `username.txt` file containing the Netscape-formatted cookies, e.g.
+To load cookies to **PyInstaLive**, create a `username.txt` file containing the Netscape-formatted cookies, e.g.
 ```
 # Netscape HTTP Cookie File
 
